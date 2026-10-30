@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>crosslink</title>
+<meta name="description" content="A weekly crossword where every answer leads somewhere.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Doto:wght@900&display=swap">
+<link rel="stylesheet" href="crosslink.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="ink-bleed" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.075" numOctaves="1" seed="31" result="loose"/>
+    <feDisplacementMap in="SourceGraphic" in2="loose" scale="1.4" xChannelSelector="R" yChannelSelector="G" result="shifted"/>
+    <feTurbulence type="fractalNoise" baseFrequency="1.6" numOctaves="2" seed="6" result="fibre"/>
+    <feDisplacementMap in="shifted" in2="fibre" scale="0.7" xChannelSelector="R" yChannelSelector="G" result="bled"/>
+    <feTurbulence type="turbulence" baseFrequency="0.95" numOctaves="1" seed="23" result="speck"/>
+    <feComponentTransfer in="speck" result="grain"><feFuncA type="discrete" tableValues="0.8 1 0.92 1 0.86 1 0.97"/></feComponentTransfer>
+    <feComposite in="bled" in2="grain" operator="in"/>
+  </filter>
+</svg>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="wm" aria-label="crosslink"><span class="sq" aria-hidden="true"></span><span><span class="cross">cross</span><span class="link">link</span></span></div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="View">
+        <button type="button" id="v-puzzle" aria-pressed="true">Puzzle</button>
+        <button type="button" id="v-answers" aria-pressed="false" disabled>Answers</button>
+      </div>
+      <span class="pill"><b>Linked</b><span id="linked">0/0</span></span>
+      <span class="pill"><b>Time</b><span id="time">0:00</span></span>
+    </div>
+    <p class="dateline"><span id="dl-no"></span><span id="dl-week"></span><select id="archive" aria-label="Past puzzles"></select><span>A weekly crossword where every answer leads somewhere.</span></p>
+  </header>
+
+  <main class="page">
+    <p class="empty" id="empty" hidden></p>
+    <div class="sheet" id="sheet" role="dialog" aria-labelledby="sheet-h">
+      <div class="banner"><canvas id="confetti" width="880" height="260" aria-hidden="true"></canvas></div>
+      <div class="body">
+        <h2 id="sheet-h">Solved!</h2>
+        <p id="sheet-p"></p>
+        <div class="btns">
+          <button type="button" class="aqua" id="sheet-close">Back to grid</button>
+          <button type="button" class="aqua primary" id="sheet-go">Explore the answers</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="phead">
+      <span class="pnum" id="pnum">1</span>
+      <div>
+        <h2 class="ptitle"><span id="ptitle"></span><small id="pby"></small></h2>
+        <p class="pnote" id="pnote"></p>
+      </div>
+    </div>
+
+    <section id="puzzleview" class="pbody">
+      <div class="clues">
+        <div><h3>Across</h3><ol id="list-A"></ol></div>
+        <div><h3>Down</h3><ol id="list-D"></ol></div>
+        <div class="assist" id="assist">
+          <svg class="gramps" id="char-fun-a" hidden viewBox="0 0 200 200" role="img" aria-label="Cartoon of a grinning young boy with a pencil behind his ear">
+            <defs>
+              <clipPath id="panel-kid"><circle cx="100" cy="100" r="92"/></clipPath>
+              <pattern id="stripes" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#f08a5d"/><rect y="7" width="12" height="5" fill="#d9542f"/></pattern>
+            </defs>
+            <circle cx="100" cy="100" r="92" fill="#cfe8d6"/>
+            <g clip-path="url(#panel-kid)" stroke="#0b0b0b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <!-- a slice of table and chair back, flat newspaper color -->
+              <path d="M0 176 L200 160 L200 210 L0 210 Z" fill="#a9c6ec"/>
+              <path d="M150 112 L196 104 L196 168 L150 172 Z" fill="#e8b46e"/>
+              <!-- striped tee -->
+              <path d="M36 210 C40 168 64 148 100 146 C136 148 160 168 164 210 Z" fill="url(#stripes)"/>
+              <path d="M86 147 q14 12 28 0" fill="#fde0d2"/>
+              <!-- ears -->
+              <ellipse cx="58" cy="100" rx="9" ry="12" fill="#fde0d2"/>
+              <ellipse cx="142" cy="100" rx="9" ry="12" fill="#fde0d2"/>
+              <path d="M57 95 q-3 5 1 10 M143 95 q3 5 -1 10" fill="none" stroke-width="1.8"/>
+              <!-- pencil tucked behind his ear -->
+              <path d="M128 70 L170 50 L173 56 L131 76 Z" fill="#f7c948"/>
+              <path d="M170 50 L180 47 L173 56 Z" fill="#fde0d2"/>
+              <path d="M128 70 L124 72 L127 78 L131 76 Z" fill="#ff8fa3"/>
+              <!-- head -->
+              <ellipse cx="100" cy="100" rx="43" ry="44" fill="#fde0d2"/>
+              <!-- mop of hair with a cowlick -->
+              <path d="M56 92 C50 58 74 42 102 42 C130 42 152 58 145 92 C140 80 132 74 124 78 C120 68 110 66 103 74 C96 64 84 66 80 76 C72 70 62 78 56 92 Z" fill="#ffe14d"/>
+              <path d="M100 43 q2 -16 16 -20 q-8 10 -5 20" fill="#ffe14d"/>
+              <path d="M70 70 q8 -8 18 -10 M114 60 q12 2 20 10" fill="none" stroke-width="1.6"/>
+              <!-- raised eyebrows; eyes follow the cursor -->
+              <path d="M76 84 q7 -6 14 -2 M110 82 q7 -4 14 2" fill="none" stroke-width="2.4"/>
+              <ellipse class="pupil" data-x="86" data-y="95" data-max="3" cx="86" cy="95" rx="3.4" ry="4.4" fill="#0b0b0b"/>
+              <ellipse class="pupil" data-x="118" data-y="95" data-max="3" cx="118" cy="95" rx="3.4" ry="4.4" fill="#0b0b0b"/>
+              <!-- button nose and freckles -->
+              <path d="M97 106 q4 -5 8 0" fill="none"/>
+              <g fill="#d9542f" stroke="none"><circle cx="76" cy="110" r="1.6"/><circle cx="81" cy="114" r="1.6"/><circle cx="72" cy="115" r="1.6"/><circle cx="124" cy="110" r="1.6"/><circle cx="129" cy="114" r="1.6"/><circle cx="120" cy="115" r="1.6"/></g>
+              <!-- big grin -->
+              <path d="M82 118 Q100 142 118 118 Q100 124 82 118 Z" fill="#0b0b0b"/>
+              <path d="M92 130 q8 5 16 0 q-8 -4 -16 0 Z" fill="#ff8fa3" stroke-width="1.4"/>
+              <path d="M88 120.5 L112 120.5 L111 124 L89 124 Z" fill="#ffffff" stroke-width="1.2"/>
+            </g>
+            <circle cx="100" cy="100" r="92" fill="none" stroke="#0b0b0b" stroke-width="3.5"/>
+          </svg>
+          <svg class="gramps" id="char-purist-a" hidden viewBox="0 0 200 200" role="img" aria-label="Cartoon of an old man with a mustache and glasses">
+            <defs><clipPath id="panel"><circle cx="100" cy="100" r="92"/></clipPath></defs>
+            <circle cx="100" cy="100" r="92" fill="#ffffff"/>
+            <g clip-path="url(#panel)" stroke="#0b0b0b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="#ffffff">
+              <!-- cardigan, shirt, collar -->
+              <path d="M24 210 C30 170 58 150 100 148 C142 150 170 170 176 210 Z" fill="#0b0b0b"/>
+              <path d="M80 150 L100 186 L120 150 Z"/>
+              <path d="M88 128 L88 152 L112 152 L112 128"/>
+              <path d="M87 147 L79 161 L99 157 Z"/>
+              <path d="M113 147 L121 161 L101 157 Z"/>
+              <!-- bow tie, the one spot of color -->
+              <path d="M100 160 L85 152 L85 169 Z M100 160 L115 152 L115 169 Z" fill="#f26a00"/>
+              <circle cx="100" cy="160" r="3.6" fill="#0b0b0b"/>
+              <circle cx="88" cy="196" r="2.4" fill="#ffffff" stroke="none"/>
+              <path d="M44 180 l6 -14 M52 186 l6 -16 M148 180 l-6 -14 M156 186 l-6 -16" stroke="#ffffff" stroke-width="1.4"/>
+              <!-- ears -->
+              <ellipse cx="57" cy="98" rx="8.5" ry="12.5"/>
+              <ellipse cx="143" cy="98" rx="8.5" ry="12.5"/>
+              <path d="M56 92 q-3 6 1 12 M144 92 q3 6 -1 12" fill="none" stroke-width="1.8"/>
+              <!-- head -->
+              <ellipse cx="100" cy="91" rx="43" ry="47"/>
+              <!-- side tufts and a few strands on top -->
+              <path d="M59 84 q-7 -9 0 -18 q-1 -8 7 -12 M61 80 q2 -9 8 -12 M141 84 q7 -9 0 -18 q1 -8 -7 -12 M139 80 q-2 -9 -8 -12" fill="none" stroke-width="2.2"/>
+              <path d="M94 45 q4 -9 12 -8 M100 45 q2 -7 9 -9" fill="none" stroke-width="1.8"/>
+              <!-- forehead wrinkles -->
+              <path d="M82 60 q18 -6 36 0 M86 67 q14 -4 28 0" fill="none" stroke-width="1.7"/>
+              <!-- bushy eyebrows -->
+              <path d="M69 76 q12 -10 25 -3 M106 73 q13 -8 25 3" fill="none" stroke-width="4.4"/>
+              <!-- glasses -->
+              <circle cx="83" cy="91" r="13.5"/>
+              <circle cx="117" cy="91" r="13.5"/>
+              <path d="M96.5 89 q3.5 -4 7 0 M69.5 89 L58 85 M130.5 89 L142 85" fill="none"/>
+              <path d="M76 84 q3 -3 7 -3 M110 84 q3 -3 7 -3" fill="none" stroke-width="1.4"/>
+              <!-- eyes follow the cursor -->
+              <circle class="pupil" data-x="83" data-y="91" data-max="6" cx="83" cy="91" r="3.2" fill="#0b0b0b"/>
+              <circle class="pupil" data-x="117" data-y="91" data-max="6" cx="117" cy="91" r="3.2" fill="#0b0b0b"/>
+              <!-- cheeks -->
+              <path d="M68 110 q2 7 7 10 M132 110 q-2 7 -7 10" fill="none" stroke-width="1.6"/>
+              <!-- bulb nose -->
+              <path d="M97 98 q-12 13 -1 18 q4 2 8 0 q11 -5 -1 -18"/>
+              <!-- open mouth, mid-sentence -->
+              <path d="M92 130 q8 10 16 0 q-8 -3 -16 0 Z" fill="#0b0b0b"/>
+              <!-- walrus mustache -->
+              <path d="M100 115 C90 110 72 112 65 127 C73 124 80 129 89 127 C95 126 98 122 100 121 C102 122 105 126 111 127 C120 129 127 124 135 127 C128 112 110 110 100 115 Z"/>
+              <path d="M78 119 l-2 6 M85 117 l-1 7 M92 117 l0 6 M108 117 l0 6 M115 117 l1 7 M122 119 l2 6" fill="none" stroke-width="1.5"/>
+            </g>
+            <circle cx="100" cy="100" r="92" fill="none" stroke="#0b0b0b" stroke-width="3.5"/>
+          </svg>
+          <svg class="gramps" id="char-purist-b" hidden viewBox="0 0 200 200" role="img" aria-label="Cartoon of a middle-aged woman with a bob haircut and reading glasses on a chain">
+            <defs><clipPath id="panel-mrs"><circle cx="100" cy="100" r="92"/></clipPath></defs>
+            <circle cx="100" cy="100" r="92" fill="#ffffff"/>
+            <g clip-path="url(#panel-mrs)" stroke="#0b0b0b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="#ffffff">
+              <!-- cardigan, blouse, neck -->
+              <path d="M24 210 C30 170 58 150 100 148 C142 150 170 170 176 210 Z" fill="#0b0b0b"/>
+              <path d="M80 150 L100 186 L120 150 Z"/>
+              <path d="M89 126 L89 152 L111 152 L111 126"/>
+              <path d="M44 180 l6 -14 M52 186 l6 -16 M148 180 l-6 -14 M156 186 l-6 -16" stroke="#ffffff" stroke-width="1.4"/>
+              <!-- pearls -->
+              <g stroke-width="1.2"><circle cx="85" cy="153" r="2.6"/><circle cx="90" cy="157" r="2.6"/><circle cx="95.5" cy="159.5" r="2.6"/><circle cx="101" cy="160" r="2.6"/><circle cx="106.5" cy="159" r="2.6"/><circle cx="111.5" cy="156" r="2.6"/><circle cx="116" cy="152" r="2.6"/></g>
+              <!-- bob, back layer -->
+              <path d="M52 100 C46 52 76 34 100 34 C126 34 156 52 148 100 C150 120 147 132 141 138 L59 138 C53 132 50 120 52 100 Z" fill="#0b0b0b"/>
+              <!-- face -->
+              <ellipse cx="100" cy="94" rx="39" ry="44"/>
+              <!-- swept fringe with a few highlights -->
+              <path d="M60 86 C60 56 80 44 104 44 C126 44 141 58 141 82 C130 70 118 64 102 66 C88 66 72 72 60 86 Z" fill="#0b0b0b"/>
+              <path d="M80 54 q12 -6 26 -5 M74 64 q8 -6 18 -9 M118 52 q10 3 16 11" fill="none" stroke="#ffffff" stroke-width="1.5"/>
+              <!-- arched brows, eyes that follow the cursor -->
+              <path d="M74 79 q10 -7 20 -1 M106 78 q10 -6 20 1" fill="none" stroke-width="2.2"/>
+              <ellipse cx="85" cy="89" rx="7" ry="5.5"/>
+              <ellipse cx="115" cy="89" rx="7" ry="5.5"/>
+              <circle class="pupil" data-x="85" data-y="89" data-max="3.2" cx="85" cy="89" r="3" fill="#0b0b0b"/>
+              <circle class="pupil" data-x="115" data-y="89" data-max="3.2" cx="115" cy="89" r="3" fill="#0b0b0b"/>
+              <path d="M78 84 l-3 -3 M80 83 l-1 -4 M122 84 l3 -3 M120 83 l1 -4" fill="none" stroke-width="1.6"/>
+              <!-- half-moon reading glasses perched low, on a beaded chain -->
+              <path d="M73 98 a11.5 9 0 0 0 23 0 Z M104 98 a11.5 9 0 0 0 23 0 Z"/>
+              <path d="M96 98 q4 -3 8 0" fill="none"/>
+              <path d="M73 98 C62 112 60 136 70 158 M127 98 C138 112 140 136 130 158" fill="none" stroke-width="2.4" stroke-dasharray="0.1 4.5"/>
+              <!-- nose, smile lines, the one spot of color -->
+              <path d="M100 99 q-4 9 -1 12 q3 1 6 -1" fill="none"/>
+              <path d="M79 112 q-2 7 3 11 M121 112 q2 7 -3 11" fill="none" stroke-width="1.4"/>
+              <path d="M88 120 q12 9 24 0 q-12 3 -24 0 Z" fill="#e0301e"/>
+            </g>
+            <circle cx="100" cy="100" r="92" fill="none" stroke="#0b0b0b" stroke-width="3.5"/>
+          </svg>
+          <svg class="gramps" id="char-fun-b" hidden viewBox="0 0 200 200" role="img" aria-label="Cartoon of a grinning young girl with pigtails and bows">
+            <defs>
+              <clipPath id="panel-girl"><circle cx="100" cy="100" r="92"/></clipPath>
+              <pattern id="dots" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="14" height="14" fill="#2ab0a0"/><circle cx="4" cy="4" r="2.2" fill="#ffffff"/><circle cx="11" cy="11" r="2.2" fill="#ffffff"/></pattern>
+            </defs>
+            <circle cx="100" cy="100" r="92" fill="#fff1b8"/>
+            <g clip-path="url(#panel-girl)" stroke="#0b0b0b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <!-- a slice of table, flat newspaper color -->
+              <path d="M0 176 L200 160 L200 210 L0 210 Z" fill="#a9c6ec"/>
+              <!-- polka-dot dress with a round collar -->
+              <path d="M36 210 C40 168 64 148 100 146 C136 148 160 168 164 210 Z" fill="url(#dots)"/>
+              <path d="M90 136 L90 150 L110 150 L110 136" fill="#fde0d2"/>
+              <path d="M100 150 q-15 -3 -20 8 q9 9 20 0 Z M100 150 q15 -3 20 8 q-9 9 -20 0 Z" fill="#ffffff"/>
+              <!-- pigtails and bows -->
+              <ellipse cx="50" cy="108" rx="13" ry="20" transform="rotate(25 50 108)" fill="#a0612f"/>
+              <ellipse cx="150" cy="108" rx="13" ry="20" transform="rotate(-25 150 108)" fill="#a0612f"/>
+              <path d="M58 86 L44 76 L46 96 Z M58 86 L70 74 L72 94 Z" fill="#ff5fa2"/>
+              <path d="M142 86 L156 76 L154 96 Z M142 86 L130 74 L128 94 Z" fill="#ff5fa2"/>
+              <circle cx="58" cy="86" r="4" fill="#ff5fa2"/>
+              <circle cx="142" cy="86" r="4" fill="#ff5fa2"/>
+              <!-- face -->
+              <ellipse cx="100" cy="100" rx="41" ry="42" fill="#fde0d2"/>
+              <!-- hair with choppy bangs -->
+              <path d="M60 96 C56 60 78 46 100 46 C122 46 144 60 140 96 L134 80 L126 88 L118 74 L110 86 L100 72 L90 86 L82 74 L74 88 L66 80 Z" fill="#a0612f"/>
+              <!-- big eyes that follow the cursor -->
+              <ellipse cx="86" cy="101" rx="7" ry="8" fill="#ffffff"/>
+              <ellipse cx="114" cy="101" rx="7" ry="8" fill="#ffffff"/>
+              <circle class="pupil" data-x="86" data-y="101" data-max="3.4" cx="86" cy="101" r="3.8" fill="#0b0b0b"/>
+              <circle class="pupil" data-x="114" data-y="101" data-max="3.4" cx="114" cy="101" r="3.8" fill="#0b0b0b"/>
+              <path d="M79 95 l-4 -3 M80 93 l-2 -4 M121 95 l4 -3 M120 93 l2 -4" fill="none" stroke-width="1.6"/>
+              <path d="M80 88 q6 -4 12 -1 M108 87 q6 -3 12 1" fill="none" stroke-width="2"/>
+              <!-- rosy cheeks, button nose, gap-toothed grin -->
+              <circle cx="73" cy="114" r="6" fill="#ffb3c1" stroke="none"/>
+              <circle cx="127" cy="114" r="6" fill="#ffb3c1" stroke="none"/>
+              <path d="M98 110 q2 2.5 4 0" fill="none" stroke-width="2"/>
+              <path d="M85 119 Q100 138 115 119 Q100 124 85 119 Z" fill="#0b0b0b"/>
+              <path d="M90 121 L98.5 121.6 L98.5 125 L91 124.5 Z M101.5 121.6 L110 121 L109 124.5 L101.5 125 Z" fill="#ffffff" stroke-width="1.1"/>
+            </g>
+            <circle cx="100" cy="100" r="92" fill="none" stroke="#0b0b0b" stroke-width="3.5"/>
+          </svg>
+          <div class="assist-text">
+            <div class="bubble" id="bubble"><span id="bubble-say"></span> <button type="button" id="mode-btn"></button></div>
+            <p class="mode-cap" id="mode-cap"></p>
+          </div>
+        </div>
+      </div>
+      <div class="play">
+        <div class="cluebar"><span class="tag" id="cb-tag">1A</span><span class="txt" id="cb-txt"></span></div>
+        <div class="gridwrap">
+          <div class="grid" id="grid" role="grid" aria-label="Crossword grid"></div>
+          <input id="kb" aria-label="Type an answer" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        </div>
+        <div class="linkrow" id="linkrow"></div>
+        <div class="key" id="key-play"></div>
+        <div class="hint">Space: next clue this way (Shift goes back) · ← →: switch direction · ↑ ↓: move a square · Tab: next clue overall · Enter or click a solved word to follow its link</div>
+      </div>
+    </section>
+
+    <section class="answers" id="answersview" hidden>
+      <div class="ans-head">
+        <h2>Every answer, linked</h2>
+        <p id="ans-sub"></p>
+        <div class="key" id="key-ans"></div>
+      </div>
+      <div class="lex" id="lex"></div>
+      <div class="plainfill" id="plainfill"></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span class="sp" id="saved">Progress is saved in this browser.</span>
+    <button type="button" id="reset">Start over</button>
+  </footer>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="core.js"></script>
+<script src="solver.js"></script>
+</body>
+</html>

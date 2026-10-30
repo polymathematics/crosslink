@@ -1,0 +1,5 @@
+# drafts hold unpublished answers; they never leave this machine
+drafts/
+build/
+.claude/
+.DS_Store

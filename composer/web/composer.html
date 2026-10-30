@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crosslink Composer</title>
+<link rel="stylesheet" href="site/crosslink.css">
+<link rel="stylesheet" href="composer.css">
+</head>
+<body class="composer">
+
+<header class="tb">
+  <div class="tb-group">
+    <button type="button" class="aqua" id="b-new">New</button>
+    <div class="pop-wrap">
+      <button type="button" class="aqua" id="b-open" aria-haspopup="true" aria-expanded="false">Open ▾</button>
+      <div class="pop" id="open-pop" hidden></div>
+    </div>
+    <button type="button" class="aqua" id="b-save">Save</button>
+  </div>
+  <div class="tb-brand">
+    <span class="wm-small"><span class="sq" aria-hidden="true"></span><span>cross<span class="link">link</span></span></span>
+    <span class="tb-sub">composer</span>
+  </div>
+  <div class="tb-group">
+    <span class="status" id="status" role="status"></span>
+    <button type="button" class="aqua" id="b-test">Test solve</button>
+    <button type="button" class="aqua primary" id="b-publish">Publish…</button>
+  </div>
+</header>
+
+<main class="cmp">
+  <section class="col-left">
+    <div class="sheetpane meta">
+      <div class="phead">
+        <label class="pnum-edit"><span class="sr">Puzzle number</span><input id="f-number" type="number" min="1" inputmode="numeric"></label>
+        <div class="meta-fields">
+          <input id="f-title" class="f-title" placeholder="Puzzle title" aria-label="Title">
+          <div class="meta-row">
+            <label>by <input id="f-author" placeholder="Author"></label>
+            <label>week of <input id="f-date" type="date"></label>
+          </div>
+          <input id="f-note" class="f-note" placeholder="A one-line note under the title" aria-label="Note">
+        </div>
+      </div>
+    </div>
+
+    <div class="gridtools">
+      <label>Size <input id="f-w" type="number" min="3" max="25"> × <input id="f-h" type="number" min="3" max="25"></label>
+      <button type="button" class="aqua small" id="b-resize">Resize</button>
+      <label class="check"><input type="checkbox" id="f-sym"> Symmetry</label>
+      <button type="button" class="aqua small" id="b-clear">Clear letters</button>
+      <span class="gridstats" id="gridstats"></span>
+    </div>
+
+    <div class="gridbox">
+      <div class="grid edit" id="grid" role="grid" aria-label="Puzzle grid"></div>
+      <input id="gkb" class="gkb" aria-label="Type into the grid" autocomplete="off" autocapitalize="characters" spellcheck="false">
+    </div>
+    <p class="hint">Type letters · <kbd>.</kbd> or ⌘-click toggles a black square · arrows move · <kbd>Space</kbd> flips direction · <kbd>Tab</kbd> next entry · <kbd>Return</kbd> jumps to the clue</p>
+  </section>
+
+  <section class="col-right">
+    <div class="ent-head">
+      <h2>Clues &amp; links</h2>
+      <span class="pill"><b>Clues</b><span id="c-clues">0/0</span></span>
+      <span class="pill"><b>Linked</b><span id="c-links">0/0</span></span>
+    </div>
+    <div class="ent-scroll" id="ent-scroll">
+      <h3>Across</h3><ol class="ents" id="list-A"></ol>
+      <h3>Down</h3><ol class="ents" id="list-D"></ol>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="modal" hidden>
+  <div class="msheet" id="msheet" role="dialog" aria-modal="true" aria-labelledby="m-title">
+    <h2 id="m-title"></h2>
+    <div class="m-body" id="m-body"></div>
+    <div class="m-btns" id="m-btns"></div>
+  </div>
+</div>
+
+<div class="testsolve" id="testsolve" hidden>
+  <div class="ts-bar"><span>Test solve. Nothing you type here is saved.</span><button type="button" class="aqua small" id="ts-close">Done</button></div>
+  <iframe id="ts-frame" title="Test solve"></iframe>
+</div>
+
+<script src="site/core.js"></script>
+<script src="bridge.js"></script>
+<script src="composer.js"></script>
+</body>
+</html>

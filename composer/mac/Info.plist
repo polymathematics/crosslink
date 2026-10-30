@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleName</key><string>Crosslink Composer</string>
+  <key>CFBundleDisplayName</key><string>Crosslink Composer</string>
+  <key>CFBundleExecutable</key><string>Crosslink Composer</string>
+  <key>CFBundleIdentifier</key><string>com.polymathematics.crosslink-composer</string>
+  <key>CFBundlePackageType</key><string>APPL</string>
+  <key>CFBundleShortVersionString</key><string>1.0</string>
+  <key>CFBundleVersion</key><string>__BUILD__</string>
+  <key>CFBundleIconFile</key><string>AppIcon</string>
+  <key>LSMinimumSystemVersion</key><string>12.0</string>
+  <key>LSApplicationCategoryType</key><string>public.app-category.productivity</string>
+  <key>NSHighResolutionCapable</key><true/>
+  <key>NSHumanReadableCopyright</key><string>Make a crossword where every answer leads somewhere.</string>
+  <!-- link previews fetch whatever address you paste, including plain http -->
+  <key>NSAppTransportSecurity</key><dict><key>NSAllowsArbitraryLoads</key><true/></dict>
+  <!-- set by build.sh: the crosslink folder this copy of the app publishes from -->
+  <key>CrosslinkRepo</key><string>__REPO__</string>
+</dict>
+</plist>
